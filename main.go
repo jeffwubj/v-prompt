@@ -15,9 +15,10 @@ func main() {
 	p := prompt.New(
 		v.Executor,
 		v.Completer,
-		prompt.OptionTitle("kube-prompt: interactive VMware Fusion client"),
+		prompt.OptionTitle("v-prompt: interactive VMware Fusion client"),
 		prompt.OptionPrefix(">>> "),
 		prompt.OptionInputTextColor(prompt.Yellow),
+		prompt.OptionMaxSuggestion(10),
 		prompt.OptionCompletionWordSeparator(completer.FilePathCompletionSeparator),
 	)
 	p.Run()
