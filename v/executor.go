@@ -3,9 +3,12 @@ package v
 import (
 	"bytes"
 	"fmt"
+	"net/url"
 	"os"
 	"os/exec"
 	"strings"
+
+	"github.com/davecgh/go-spew/spew"
 )
 
 func Executor(s string) {
@@ -18,8 +21,7 @@ func Executor(s string) {
 		return
 	}
 
-	args := strings.Split(s, " ")
-	cmd := exec.Command("vmrun", args...)
+	cmd := exec.Command("/bin/sh", "-c", "vmrun "+s)
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
@@ -37,7 +39,9 @@ func ExecuteAndGetResult(s string) string {
 
 	out := &bytes.Buffer{}
 	args := strings.Split(s, " ")
-	cmd := exec.Command("vmrun", args...)
+	args = unescapeArgs(args)
+	spew.Dump(args)
+	cmd := exec.Command("/bin/sh", "-c", "vmrun "+s)
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = out
 	if err := cmd.Run(); err != nil {
@@ -46,4 +50,13 @@ func ExecuteAndGetResult(s string) string {
 	}
 	r := string(out.Bytes())
 	return r
+}
+
+func unescapeArgs(args []string) []string {
+	var res []string
+	for _, arg := range args {
+		unescape, _ := url.QueryUnescape(arg)
+		res = append(res, unescape)
+	}
+	return res
 }

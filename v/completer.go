@@ -10,7 +10,8 @@ func Completer(d prompt.Document) []prompt.Suggest {
 	if d.TextBeforeCursor() == "" {
 		return []prompt.Suggest{}
 	}
-	args := strings.Split(d.TextBeforeCursor(), " ")
+
+	args := splitArgs(d.TextBeforeCursor())
 
 	for i := range args {
 		if args[i] == "|" {
@@ -19,6 +20,42 @@ func Completer(d prompt.Document) []prompt.Suggest {
 	}
 
 	return argumentsCompleter(args)
+}
+
+func splitArgs(text string) []string {
+	if strings.Contains(text, ".vmx") {
+		firstspace := strings.Index(text, " ")
+		firstvmx := strings.Index(text, ".vmx") + 4
+		firstArg := strings.TrimSpace(text[0:firstspace])
+		secondArg := strings.TrimSpace(text[firstspace:firstvmx])
+		remaining := strings.Split(text[firstvmx:], " ")
+		res := []string{firstArg, secondArg}
+		if len(remaining) > 0 {
+			remaining = remaining[1:]
+			res = append(res, remaining...)
+		}
+		return res
+	} else {
+		if shouldHaveVMXInPath(text) {
+			firstspace := strings.Index(text, " ")
+			cmd := text[:firstspace]
+			return []string{cmd, ""}
+		} else {
+			return strings.Split(text, " ")
+		}
+	}
+}
+
+func shouldHaveVMXInPath(text string) bool {
+	args := strings.Split(text, " ")
+	if len(args) > 1 {
+		cmd := strings.TrimSpace(args[0])
+		if cmd == "start" || cmd == "stop" {
+			return true
+		}
+	}
+	return false
+
 }
 
 var commands = []prompt.Suggest{
@@ -80,6 +117,39 @@ var commands = []prompt.Suggest{
 func argumentsCompleter(args []string) []prompt.Suggest {
 	if len(args) <= 1 {
 		return prompt.FilterContains(commands, args[0], true)
+	}
+	return firstArgumentCompleter(args)
+}
+
+func firstArgumentCompleter(args []string) []prompt.Suggest {
+	first := args[0]
+	switch first {
+	case "start":
+		if len(args) == 2 {
+			second := args[1]
+			return prompt.FilterHasPrefix(GetVMXPathesSuggestions(), second, true)
+		} else if len(args) == 3 {
+			return []prompt.Suggest{
+				{Text: "nogui",
+					Description: "Start virtual machine at backend without UI"},
+				{Text: "gui",
+					Description: "Start virtual machine with Fusion UI"}}
+		}
+	case "stop":
+		fallthrough
+	case "reset":
+		fallthrough
+	case "suspend":
+		fallthrough
+	case "pause":
+		fallthrough
+	case "unpause":
+		fallthrough
+	case "listNetworkAdapters":
+		if len(args) == 2 {
+			second := args[1]
+			return prompt.FilterHasPrefix(GetVMXPathesSuggestions(), second, true)
+		}
 	}
 	return []prompt.Suggest{}
 }
