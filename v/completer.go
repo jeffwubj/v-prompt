@@ -39,7 +39,7 @@ func splitArgs(text string) []string {
 		if shouldHaveVMXInPath(text) {
 			firstspace := strings.Index(text, " ")
 			cmd := text[:firstspace]
-			return []string{cmd, ""}
+			return []string{cmd, text[firstspace+1:]}
 		} else {
 			return strings.Split(text, " ")
 		}
@@ -50,12 +50,13 @@ func shouldHaveVMXInPath(text string) bool {
 	args := strings.Split(text, " ")
 	if len(args) > 1 {
 		cmd := strings.TrimSpace(args[0])
-		if cmd == "start" || cmd == "stop" {
+		if cmd != "listHostNetworks" && cmd != "listHostNetworks" &&
+			cmd != "setPortForwarding" && cmd != "deletePortForwarding" &&
+			cmd != "downloadPhotonVM" {
 			return true
 		}
 	}
 	return false
-
 }
 
 var commands = []prompt.Suggest{

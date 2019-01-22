@@ -2,6 +2,7 @@ package prompt
 
 import (
 	"runtime"
+	"strings"
 
 	"github.com/c-bata/go-prompt/internal/debug"
 	runewidth "github.com/mattn/go-runewidth"
@@ -208,8 +209,14 @@ func (r *Render) Render(buffer *Buffer, completion *CompletionManager) {
 
 	r.renderCompletion(buffer, completion)
 	if suggest, ok := completion.GetSelectedSuggestion(); ok {
-		cursor = r.backward(cursor, runewidth.StringWidth(buffer.Document().GetWordBeforeCursorUntilSeparator(completion.wordSeparator)))
-
+		text := buffer.Document().Text
+		if ShouldHaveVMXInPath(text) && !strings.Contains(text, ".vmx\"") {
+			firstspace := strings.Index(text, " ")
+			text = text[firstspace+1:]
+			cursor = r.backward(cursor, runewidth.StringWidth(text))
+		} else {
+			cursor = r.backward(cursor, runewidth.StringWidth(buffer.Document().GetWordBeforeCursorUntilSeparator(completion.wordSeparator)))
+		}
 		r.out.SetColor(r.previewSuggestionTextColor, r.previewSuggestionBGColor, false)
 		r.out.WriteStr(suggest.Text)
 		r.out.SetColor(DefaultColor, DefaultColor, false)
@@ -219,10 +226,20 @@ func (r *Render) Render(buffer *Buffer, completion *CompletionManager) {
 		r.out.WriteStr(rest)
 		cursor += runewidth.StringWidth(rest)
 		r.lineWrap(cursor)
-
 		cursor = r.backward(cursor, runewidth.StringWidth(rest))
 	}
 	r.previousCursor = cursor
+}
+
+func ShouldHaveVMXInPath(text string) bool {
+	args := strings.Split(text, " ")
+	if len(args) > 1 {
+		cmd := strings.TrimSpace(args[0])
+		if cmd == "start" || cmd == "stop" {
+			return true
+		}
+	}
+	return false
 }
 
 // BreakLine to break line.

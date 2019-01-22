@@ -1,6 +1,7 @@
 package v
 
 import (
+	"fmt"
 	"os"
 	"path"
 	"path/filepath"
@@ -33,12 +34,11 @@ func checkExt(ext string) []string {
 		if !f.IsDir() {
 			if filepath.Ext(path) == ext {
 				// path = url.QueryEscape(path)
-				// path = fmt.Sprintf("'%s'", path)
+				path = fmt.Sprintf("\"%s\"", path)
 				files = append(files, path)
 			}
 		}
 		return nil
 	})
-	// files = append(files, "Type vmx path directly if not listed")
 	return files
 }
