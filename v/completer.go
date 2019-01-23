@@ -143,12 +143,21 @@ func firstArgumentCompleter(args []string) []prompt.Suggest {
 		} else if len(args) == 3 {
 			return []prompt.Suggest{
 				{Text: "hard",
-					Description: "Powers off the virtual machine abruptly with no consideration for work in progress"},
+					Description: "Power off the virtual machine abruptly with no consideration for work in progress"},
 				{Text: "soft",
-					Description: "Sends a shut down signal to the guest operating system."}}
+					Description: "Send a shut down signal to the guest operating system"}}
 		}
 	case "reset":
-		fallthrough
+		if len(args) == 2 {
+			second := args[1]
+			return prompt.FilterHasPrefix(GetVMXPathesSuggestions(), second, true)
+		} else if len(args) == 3 {
+			return []prompt.Suggest{
+				{Text: "hard",
+					Description: "Power off the virtual machine abruptly with no consideration for work in progress"},
+				{Text: "soft",
+					Description: "Shuts down and restarts the guest operating system gracefully. VMware Tools may run scripts during the process"}}
+		}
 	case "suspend":
 		fallthrough
 	case "pause":
