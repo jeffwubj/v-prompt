@@ -137,7 +137,16 @@ func firstArgumentCompleter(args []string) []prompt.Suggest {
 					Description: "Start virtual machine with Fusion UI"}}
 		}
 	case "stop":
-		fallthrough
+		if len(args) == 2 {
+			second := args[1]
+			return prompt.FilterHasPrefix(GetVMXPathesSuggestions(), second, true)
+		} else if len(args) == 3 {
+			return []prompt.Suggest{
+				{Text: "hard",
+					Description: "Powers off the virtual machine abruptly with no consideration for work in progress"},
+				{Text: "soft",
+					Description: "Sends a shut down signal to the guest operating system."}}
+		}
 	case "reset":
 		fallthrough
 	case "suspend":
