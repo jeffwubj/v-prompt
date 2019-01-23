@@ -159,11 +159,26 @@ func firstArgumentCompleter(args []string) []prompt.Suggest {
 					Description: "Shuts down and restarts the guest operating system gracefully. VMware Tools may run scripts during the process"}}
 		}
 	case "suspend":
-		fallthrough
+		if len(args) == 2 {
+			second := args[1]
+			return prompt.FilterHasPrefix(GetVMXPathesSuggestions(), second, true)
+		} else if len(args) == 3 {
+			return []prompt.Suggest{
+				{Text: "hard",
+					Description: "Suspend the virtual machine abruptly"},
+				{Text: "soft",
+					Description: "The guest OS can be made aware of the process, allowing it to sleep/hibernate (if supported)"}}
+		}
 	case "pause":
-		fallthrough
+		if len(args) == 2 {
+			second := args[1]
+			return prompt.FilterHasPrefix(GetVMXPathesSuggestions(), second, true)
+		}
 	case "unpause":
-		fallthrough
+		if len(args) == 2 {
+			second := args[1]
+			return prompt.FilterHasPrefix(GetVMXPathesSuggestions(), second, true)
+		}
 	case "listNetworkAdapters":
 		if len(args) == 2 {
 			second := args[1]
