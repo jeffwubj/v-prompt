@@ -164,7 +164,7 @@ func (p *Prompt) handleCompletionKeyBinding(key Key, completing bool) {
 		if s, ok := p.completion.GetSelectedSuggestion(); ok {
 			w := p.buf.Document().GetWordBeforeCursorUntilSeparator(p.completion.wordSeparator)
 			text := p.buf.Document().Text
-			if ShouldHaveVMXInPath(text) && !strings.Contains(text, ".vmx\"") {
+			if ShouldHaveVMXInPath(text) && !strings.Contains(text, ".vmx") {
 				firstspace := strings.Index(text, " ")
 				w = text[firstspace+1:]
 			}

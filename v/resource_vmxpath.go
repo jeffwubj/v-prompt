@@ -1,10 +1,10 @@
 package v
 
 import (
-	"fmt"
 	"os"
 	"path"
 	"path/filepath"
+	"strings"
 
 	prompt "github.com/c-bata/go-prompt"
 	homedir "github.com/mitchellh/go-homedir"
@@ -33,8 +33,7 @@ func checkExt(ext string) []string {
 	filepath.Walk(home, func(path string, f os.FileInfo, _ error) error {
 		if !f.IsDir() {
 			if filepath.Ext(path) == ext {
-				// path = url.QueryEscape(path)
-				path = fmt.Sprintf("\"%s\"", path)
+				path = strings.Replace(path, " ", "\\ ", -1)
 				files = append(files, path)
 			}
 		}

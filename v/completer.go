@@ -179,10 +179,23 @@ func firstArgumentCompleter(args []string) []prompt.Suggest {
 			second := args[1]
 			return prompt.FilterHasPrefix(GetVMXPathesSuggestions(), second, true)
 		}
-	case "listNetworkAdapters":
+	case "listSnapshots":
 		if len(args) == 2 {
 			second := args[1]
 			return prompt.FilterHasPrefix(GetVMXPathesSuggestions(), second, true)
+		} else if len(args) == 3 {
+			return []prompt.Suggest{
+				{Text: "showTree",
+					Description: "Show snapshot tree"},
+			}
+		}
+	case "revertToSnapshot":
+		if len(args) == 2 {
+			second := args[1]
+			return prompt.FilterHasPrefix(GetVMXPathesSuggestions(), second, true)
+		} else if len(args) == 3 {
+			second := args[1]
+			return GetSnapshotSuggestions(second)
 		}
 	}
 	return []prompt.Suggest{}

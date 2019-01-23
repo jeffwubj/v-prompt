@@ -210,7 +210,7 @@ func (r *Render) Render(buffer *Buffer, completion *CompletionManager) {
 	r.renderCompletion(buffer, completion)
 	if suggest, ok := completion.GetSelectedSuggestion(); ok {
 		text := buffer.Document().Text
-		if ShouldHaveVMXInPath(text) && !strings.Contains(text, ".vmx\"") {
+		if ShouldHaveVMXInPath(text) && !strings.Contains(text, ".vmx") {
 			firstspace := strings.Index(text, " ")
 			text = text[firstspace+1:]
 			cursor = r.backward(cursor, runewidth.StringWidth(text))
@@ -235,7 +235,9 @@ func ShouldHaveVMXInPath(text string) bool {
 	args := strings.Split(text, " ")
 	if len(args) > 1 {
 		cmd := strings.TrimSpace(args[0])
-		if cmd == "start" || cmd == "stop" {
+		if cmd != "listHostNetworks" && cmd != "listHostNetworks" &&
+			cmd != "setPortForwarding" && cmd != "deletePortForwarding" &&
+			cmd != "downloadPhotonVM" {
 			return true
 		}
 	}
