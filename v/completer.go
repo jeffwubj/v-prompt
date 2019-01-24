@@ -66,6 +66,7 @@ var commands = []prompt.Suggest{
 	{Text: "suspend", Description: "Suspend a VM"},
 	{Text: "pause", Description: "Pause a VM"},
 	{Text: "unpause", Description: "Unpause a VM"},
+	{Text: "snapshot", Description: "Create a snapshot of a VM"},
 	{Text: "listSnapshots", Description: "List all snapshots in a VM"},
 	{Text: "revertToSnapshot", Description: "Set VM state to a snapshot"},
 	{Text: "deleteSnapshot", Description: "Remove a snapshot from a VM"},
@@ -188,6 +189,11 @@ func firstArgumentCompleter(args []string) []prompt.Suggest {
 				{Text: "showTree",
 					Description: "Show snapshot tree"},
 			}
+		}
+	case "snapshot":
+		if len(args) == 2 {
+			second := args[1]
+			return prompt.FilterHasPrefix(GetVMXPathesSuggestions(), second, true)
 		}
 	case "revertToSnapshot":
 		if len(args) == 2 {
