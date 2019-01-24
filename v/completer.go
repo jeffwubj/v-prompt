@@ -203,6 +203,20 @@ func firstArgumentCompleter(args []string) []prompt.Suggest {
 			second := args[1]
 			return GetSnapshotSuggestions(second)
 		}
+	case "deleteSnapshot":
+		if len(args) == 2 {
+			second := args[1]
+			return prompt.FilterHasPrefix(GetVMXPathesSuggestions(), second, true)
+		} else if len(args) == 3 {
+			second := args[1]
+			return GetSnapshotSuggestions(second)
+		} else if len(args) == 4 {
+			// TODO snapshot name with space will make auto complete for this arg not work, need a total solution
+			return []prompt.Suggest{
+				{Text: "andDeleteChildren",
+					Description: "Delete children of the given snapshot"},
+			}
+		}
 	}
 	return []prompt.Suggest{}
 }
