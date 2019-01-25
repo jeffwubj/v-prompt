@@ -222,6 +222,24 @@ func firstArgumentCompleter(args []string) []prompt.Suggest {
 			second := args[1]
 			return prompt.FilterHasPrefix(GetVMXPathesSuggestions(), second, true)
 		}
+	case "addNetworkAdapter":
+		if len(args) == 2 {
+			second := args[1]
+			return prompt.FilterHasPrefix(GetVMXPathesSuggestions(), second, true)
+		} else if len(args) == 3 {
+			return []prompt.Suggest{
+				{Text: "nat", Description: "Delete children of the given snapshot"},
+				{Text: "bridged", Description: "Delete children of the given snapshot"},
+				{Text: "hostOnly", Description: "Delete children of the given snapshot"},
+				{Text: "custom", Description: "Delete children of the given snapshot"},
+			}
+		} else if len(args) == 4 {
+			third := args[2]
+			forth := args[3]
+			if third == "custom" {
+				return prompt.FilterHasPrefix(GetHostNetworks(), forth, true)
+			}
+		}
 	}
 	return []prompt.Suggest{}
 }
