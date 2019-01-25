@@ -217,6 +217,11 @@ func firstArgumentCompleter(args []string) []prompt.Suggest {
 					Description: "Delete children of the given snapshot"},
 			}
 		}
+	case "listNetworkAdapters":
+		if len(args) == 2 {
+			second := args[1]
+			return prompt.FilterHasPrefix(GetVMXPathesSuggestions(), second, true)
+		}
 	}
 	return []prompt.Suggest{}
 }
