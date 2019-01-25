@@ -7,6 +7,8 @@ import (
 	"os"
 	"os/exec"
 	"strings"
+
+	"github.com/jeffwubj/escapeshellchar"
 )
 
 func Executor(s string) {
@@ -19,6 +21,7 @@ func Executor(s string) {
 		return
 	}
 
+	s = escapeshellchar.UnEscapeShellString(s)
 	cmd := exec.Command("/bin/sh", "-c", "vmrun "+s)
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
@@ -36,6 +39,7 @@ func ExecuteAndGetResult(s string) string {
 	}
 
 	out := &bytes.Buffer{}
+	s = escapeshellchar.UnEscapeShellString(s)
 	cmd := exec.Command("/bin/sh", "-c", "vmrun "+s)
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = out

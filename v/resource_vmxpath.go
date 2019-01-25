@@ -4,9 +4,9 @@ import (
 	"os"
 	"path"
 	"path/filepath"
-	"strings"
 
 	prompt "github.com/c-bata/go-prompt"
+	"github.com/jeffwubj/escapeshellchar"
 	homedir "github.com/mitchellh/go-homedir"
 )
 
@@ -33,7 +33,7 @@ func checkExt(ext string) []string {
 	filepath.Walk(home, func(path string, f os.FileInfo, _ error) error {
 		if !f.IsDir() {
 			if filepath.Ext(path) == ext {
-				path = strings.Replace(path, " ", "\\ ", -1)
+				path = escapeshellchar.EscapeShellString(path)
 				files = append(files, path)
 			}
 		}

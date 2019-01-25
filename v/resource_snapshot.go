@@ -4,6 +4,7 @@ import (
 	"strings"
 
 	prompt "github.com/c-bata/go-prompt"
+	"github.com/jeffwubj/escapeshellchar"
 )
 
 func GetSnapshotSuggestions(vmxpath string) []prompt.Suggest {
@@ -15,7 +16,7 @@ func GetSnapshotSuggestions(vmxpath string) []prompt.Suggest {
 		if strings.TrimSpace(line) == "" {
 			continue
 		}
-		line = strings.Replace(line, " ", "\\ ", -1)
+		line = escapeshellchar.EscapeShellString(line)
 		res = append(res, prompt.Suggest{
 			Text:        line,
 			Description: "Snapshot name",
