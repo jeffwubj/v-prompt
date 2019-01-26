@@ -262,6 +262,15 @@ func firstArgumentCompleter(args []string) []prompt.Suggest {
 				return prompt.FilterHasPrefix(GetHostNetworks(), fifth, true)
 			}
 		}
+	case "deleteNetworkAdapter":
+		if len(args) == 2 {
+			second := args[1]
+			return prompt.FilterHasPrefix(GetVMXPathesSuggestions(), second, true)
+		} else if len(args) == 3 {
+			second := args[1]
+			third := args[2]
+			return prompt.FilterHasPrefix(GetNetworkAdapters(second), third, true)
+		}
 	}
 	return []prompt.Suggest{}
 }
