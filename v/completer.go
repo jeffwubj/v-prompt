@@ -240,6 +240,28 @@ func firstArgumentCompleter(args []string) []prompt.Suggest {
 				return prompt.FilterHasPrefix(GetHostNetworks(), forth, true)
 			}
 		}
+	case "setNetworkAdapter":
+		if len(args) == 2 {
+			second := args[1]
+			return prompt.FilterHasPrefix(GetVMXPathesSuggestions(), second, true)
+		} else if len(args) == 3 {
+			second := args[1]
+			third := args[2]
+			return prompt.FilterHasPrefix(GetNetworkAdapters(second), third, true)
+		} else if len(args) == 4 {
+			return []prompt.Suggest{
+				{Text: "nat", Description: "Delete children of the given snapshot"},
+				{Text: "bridged", Description: "Delete children of the given snapshot"},
+				{Text: "hostOnly", Description: "Delete children of the given snapshot"},
+				{Text: "custom", Description: "Delete children of the given snapshot"},
+			}
+		} else if len(args) == 5 {
+			forth := args[3]
+			fifth := args[4]
+			if forth == "custom" {
+				return prompt.FilterHasPrefix(GetHostNetworks(), fifth, true)
+			}
+		}
 	}
 	return []prompt.Suggest{}
 }
